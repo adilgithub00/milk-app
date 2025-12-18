@@ -16,6 +16,10 @@ Route::post('/payment', [CalculatorController::class, 'storePayment'])->name('pa
 Route::get('/yearly-report', [YearlyReportController::class, 'index']);
 
 Route::get('/migrate-now', function () {
-    Artisan::call('migrate', ['--force' => true]);
-    return 'Migrations run successfully';
-})->withoutMiddleware('csrf');
+    try {
+        Artisan::call('migrate', ['--force' => true]);
+        return 'Migrations run successfully';
+    } catch (\Exception $e) {
+        return 'Error: ' . $e->getMessage();
+    }
+});
