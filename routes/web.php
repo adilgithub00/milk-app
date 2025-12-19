@@ -16,20 +16,20 @@ Route::post('/payment', [CalculatorController::class, 'storePayment'])->name('pa
 
 Route::get('/yearly-report', [YearlyReportController::class, 'index']);
 
-Route::get('/drop-sessions', function () {
-    try {
-        DB::statement('DROP TABLE IF EXISTS sessions');
-        return "Sessions table dropped successfully.";
-    } catch (\Exception $e) {
-        return $e->getMessage();
-    }
-});
+// Route::get('/drop-sessions', function () {
+//     try {
+//         DB::statement('DROP TABLE IF EXISTS sessions');
+//         return "Sessions table dropped successfully.";
+//     } catch (\Exception $e) {
+//         return $e->getMessage();
+//     }
+// });
 
-Route::get('/migrate-now', function () {
-    try {
-        Artisan::call('migrate', ['--force' => true]);
-        return 'Migrations run successfully';
-    } catch (\Exception $e) {
-        return 'Error: ' . $e->getMessage();
-    }
-});
+// Route::get('/migrate-now', function () {
+//     try {
+//         Artisan::call('migrate', ['--force' => true]);
+//         return 'Migrations run successfully';
+//     } catch (\Exception $e) {
+//         return 'Error: ' . $e->getMessage();
+//     }
+// });
