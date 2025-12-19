@@ -42,35 +42,70 @@
                     </thead>
 
                     <tbody>
-                        @foreach ($months as $m)
-                            <tr @if (strtolower($m['month']) == strtolower(now()->format('F'))) class="table-warning" @endif>
+                        @foreach ($months as $index => $m)
+                            <tr
+                                class="{{ strtolower($m['month']) == strtolower(now()->format('F')) ? 'table-warning' : '' }}">
                                 <td>{{ $m['month'] }}</td>
-                                <td>{{ $m['kg'] }}</td>
+                                <td>{{ $m['totalKg'] }}</td>
                                 <td>
-                                    @if (count($m['rates']) === 0)
+                                    @if (count($m['ratesUsed']) === 0)
                                         <span class="text-muted">—</span>
-                                    @elseif(count($m['rates']) === 1)
-                                        {{ number_format($m['rates'][0], 2) }}
+                                    @elseif(count($m['ratesUsed']) === 1)
+                                        {{ $m['ratesUsed'][0] }}
                                     @else
-                                        <span class="badge bg-warning text-dark">
-                                            Multiple
-                                        </span>
-                                        <small class="text-muted d-block">
-                                            {{ implode(', ', $m['rates']) }}
-                                        </small>
+                                        <span class="badge bg-warning text-dark">Multiple</span>
                                     @endif
                                 </td>
-                                <td>{{ number_format($m['total']) }}</td>
+                                <td>{{ number_format($m['totalAmount']) }}</td>
                                 <td>{{ number_format($m['paid']) }}</td>
-                                <td>
-                                    @if ($m['remaining'] > 0)
-                                        <span class="text-danger">{{ number_format($m['remaining']) }}</span>
-                                    @else
-                                        <span class="text-success">0</span>
-                                    @endif
-                                </td>
+                                <td>{{ number_format($m['remaining']) }}</td>
                             </tr>
+
+                            {{-- Daily breakdown (collapsible) --}}
+                            @if (count($m['dailyEntries']) > 0)
+                                <tr>
+                                    <td colspan="6" class="p-0">
+                                        <div class="d-grid gap-1">
+                                            <button
+                                                class="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-between"
+                                                type="button" data-bs-toggle="collapse"
+                                                data-bs-target="#dailyEntries{{ $index }}" aria-expanded="false"
+                                                aria-controls="dailyEntries{{ $index }}">
+                                                <span>Daily Entries</span>
+                                                <i class="bi bi-chevron-down"></i>
+                                            </button>
+
+                                            <div class="collapse" id="dailyEntries{{ $index }}">
+                                                <div class="table-responsive mt-1">
+                                                    <table class="table table-sm table-bordered mb-0">
+                                                        <thead class="table-light">
+                                                            <tr>
+                                                                <th>Date</th>
+                                                                <th>Milk (KG)</th>
+                                                                <th>Rate</th>
+                                                                <th>Amount</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach ($m['dailyEntries'] as $d)
+                                                                <tr>
+                                                                    <td>{{ $d['date'] }}</td>
+                                                                    <td>{{ $d['kg'] }}</td>
+                                                                    <td>{{ $d['rate'] }}</td>
+                                                                    <td>{{ number_format($d['amount']) }}</td>
+                                                                </tr>
+                                                            @endforeach
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                </tr>
+                            @endif
                         @endforeach
+
                     </tbody>
 
                 </table>
@@ -78,5 +113,6 @@
             </div>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 @endsection
