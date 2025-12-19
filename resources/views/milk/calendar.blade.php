@@ -1,78 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <title>Milk Calendar</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    {{-- Bootstrap 5 --}}
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <style>
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 10px;
-        }
-
-        .calendar-day {
-            min-height: 110px;
-            border-radius: 10px;
-            padding: 8px;
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
-            font-size: 14px;
-        }
-
-        .calendar-day.has-milk {
-            background: #d1f7d6;
-            border-color: #198754;
-        }
-
-        .day-number {
-            font-weight: bold;
-            font-size: 15px;
-        }
-
-        .kg-badge {
-            font-size: 0.8rem;
-            display: inline-block;
-            margin-top: 5px;
-        }
-
-        /* ---------------- MOBILE ---------------- */
-        @media (max-width: 768px) {
-            .calendar-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
-
-            .calendar-day {
-                min-height: 90px;
-                padding: 6px;
-                font-size: 13px;
-            }
-
-            .day-number {
-                font-size: 14px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .calendar-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .calendar-day {
-                min-height: 80px;
-                padding: 6px;
-            }
-        }
-    </style>
-
-</head>
-
-<body class="bg-light">
+@section('title', 'Milk Calendar')
+@section('content')
 
     <div class="container py-4">
 
@@ -164,6 +93,4 @@
 
     </div>
 
-</body>
-
-</html>
+@endsection

@@ -12,10 +12,9 @@ return new class extends Migration {
     {
         Schema::create('monthly_rates', function (Blueprint $table) {
             $table->id();
-            $table->unsignedTinyInteger('month');
-            $table->unsignedSmallInteger('year');
+            $table->date('effective_from');  // rate effective date
             $table->decimal('rate_per_kg', 6, 2);
-            $table->unique(['month', 'year']);
+            $table->boolean('is_active')->default(false);
             $table->timestamps();
         });
     }

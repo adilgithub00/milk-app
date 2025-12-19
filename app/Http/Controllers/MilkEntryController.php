@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\MilkEntry;
+use App\Models\MonthlyRate;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -35,10 +36,25 @@ class MilkEntryController extends Controller
             'quantity_kg' => 'required|numeric|min:0.1'
         ]);
 
-        MilkEntry::updateOrCreate(
-            ['entry_date' => $request->entry_date],
-            ['quantity_kg' => $request->quantity_kg]
-        );
+        $activeRate = MonthlyRate::where('is_active', true)->first();
+
+        if (!$activeRate) {
+            return back()->withErrors('No active milk rate found. Please set rate first.');
+        }
+
+        $entry = MilkEntry::where('entry_date', $request->entry_date)->first();
+
+        if ($entry) {
+            $entry->update([
+                'quantity_kg' => $request->quantity_kg,
+            ]);
+        } else {
+            MilkEntry::create([
+                'entry_date' => $request->entry_date,
+                'quantity_kg' => $request->quantity_kg,
+                'rate_per_kg' => $activeRate->rate_per_kg,
+            ]);
+        }
 
         return redirect()->back();
     }

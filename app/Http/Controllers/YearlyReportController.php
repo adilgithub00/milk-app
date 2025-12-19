@@ -6,6 +6,7 @@ use App\Models\MilkEntry;
 use App\Models\MonthlyRate;
 use App\Models\Payment;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class YearlyReportController extends Controller
 {
@@ -19,11 +20,16 @@ class YearlyReportController extends Controller
                 ->whereMonth('entry_date', $month)
                 ->sum('quantity_kg');
 
-            $rate = MonthlyRate::where('year', $year)
-                ->where('month', $month)
-                ->value('rate_per_kg') ?? 0;
+            $ratesUsed = MilkEntry::whereYear('entry_date', $year)
+                ->whereMonth('entry_date', $month)
+                ->select('rate_per_kg')
+                ->distinct()
+                ->pluck('rate_per_kg')
+                ->toArray();
 
-            $totalAmount = $totalKg * $rate;
+            $totalAmount = MilkEntry::whereYear('entry_date', $year)
+                ->whereMonth('entry_date', $month)
+                ->sum(DB::raw('quantity_kg * rate_per_kg'));
 
             $paid = Payment::whereYear('payment_date', $year)
                 ->whereMonth('payment_date', $month)
@@ -34,7 +40,7 @@ class YearlyReportController extends Controller
             $months[] = [
                 'month' => Carbon::create($year, $month)->format('F'),
                 'kg' => $totalKg,
-                'rate' => $rate,
+                'rates' => $ratesUsed,
                 'total' => $totalAmount,
                 'paid' => $paid,
                 'remaining' => $remaining,

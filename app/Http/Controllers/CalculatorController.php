@@ -7,6 +7,7 @@ use App\Models\MonthlyRate;
 use App\Models\Payment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CalculatorController extends Controller
 {
@@ -19,11 +20,14 @@ class CalculatorController extends Controller
             ->whereYear('entry_date', $year)
             ->sum('quantity_kg');
 
-        $rate = MonthlyRate::where('month', $month)
-            ->where('year', $year)
-            ->value('rate_per_kg') ?? 0;
+        $totalAmount = MilkEntry::whereYear('entry_date', $year)
+            ->whereMonth('entry_date', $month)
+            ->sum(DB::raw('quantity_kg * rate_per_kg'));
 
-        $totalAmount = $totalKg * $rate;
+        $activeRate = MonthlyRate::where('is_active', true)->first();
+
+        $rate = $activeRate ? $activeRate->rate_per_kg : 0;
+        $effectiveFrom = $activeRate ? $activeRate->effective_from : null;
 
         $paid = Payment::whereMonth('payment_date', $month)
             ->whereYear('payment_date', $year)
@@ -31,13 +35,18 @@ class CalculatorController extends Controller
 
         $remaining = $totalAmount - $paid;
 
+        $milkEntries = MilkEntry::whereYear('entry_date', $year)
+            ->whereMonth('entry_date', $month)
+            ->orderBy('entry_date')
+            ->get();
+
         $payments = Payment::whereMonth('payment_date', $month)
             ->whereYear('payment_date', $year)
             ->orderBy('payment_date', 'asc')
             ->get();
 
         return view('milk.calculator', compact(
-            'totalKg', 'rate', 'totalAmount', 'paid', 'remaining', 'payments', 'month', 'year'
+            'totalKg', 'rate', 'effectiveFrom', 'totalAmount', 'paid', 'remaining', 'milkEntries', 'payments', 'month', 'year'
         ));
     }
 

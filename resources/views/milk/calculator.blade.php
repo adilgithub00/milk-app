@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.app')
 
 @if ($errors->any())
     <div class="alert alert-danger">
@@ -16,51 +15,8 @@
     </div>
 @endif
 
-<head>
-    <meta charset="UTF-8">
-    <title>Monthly Calculator</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <style>
-        @media (max-width: 768px) {
-            h3 {
-                text-align: center;
-            }
-
-            .btn {
-                width: 100%;
-                margin-bottom: 8px;
-            }
-
-            .card {
-                margin-bottom: 12px;
-            }
-
-            table {
-                font-size: 14px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            h3 {
-                font-size: 20px;
-            }
-
-            .fs-4 {
-                font-size: 18px !important;
-            }
-
-            table {
-                font-size: 13px;
-            }
-        }
-    </style>
-
-</head>
-
-<body class="bg-light">
+@section('title', 'Monthly Calculator')
+@section('content')
 
     <div class="container py-4">
 
@@ -97,6 +53,11 @@
                 <div class="card text-center shadow-sm">
                     <div class="card-body">
                         <h5>Rate per KG</h5>
+                        <small class="text-muted">
+                            @if ($effectiveFrom)
+                                (Effective from: {{ \Carbon\Carbon::create($effectiveFrom)->format('d-m-Y') }})
+                            @endif
+                        </small>
                         <p class="fs-4">{{ $rate }}</p>
                     </div>
                 </div>
@@ -106,7 +67,7 @@
                 <div class="card text-center shadow-sm">
                     <div class="card-body">
                         <h5>Total Amount</h5>
-                        <p class="fs-4">{{ $totalAmount }}</p>
+                        <p class="fs-4">{{ number_format($totalAmount) }}</p>
                     </div>
                 </div>
             </div>
@@ -117,7 +78,7 @@
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <h5>Paid</h5>
-                        <p class="fs-4">{{ $paid }}</p>
+                        <p class="fs-4"> {{ number_format($paid) }}</p>
                     </div>
                 </div>
             </div>
@@ -125,7 +86,7 @@
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <h5>Remaining</h5>
-                        <p class="fs-4">{{ $remaining }}</p>
+                        <p class="fs-4"> {{ number_format($remaining) }}</p>
                     </div>
                 </div>
             </div>
@@ -167,6 +128,37 @@
             </div>
         </div>
 
+        {{-- Milk & Rate History --}}
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h5>Milk & Rate History</h5>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped mt-3">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Date</th>
+                                <th>Milk (KG)</th>
+                                <th>Rate</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($milkEntries as $e)
+                                <tr>
+                                    <td>{{ $e->entry_date->format('d-m-Y') }}</td>
+                                    <td>{{ $e->quantity_kg }}</td>
+                                    <td>{{ $e->rate_per_kg }}</td>
+                                    <td>{{ number_format($e->quantity_kg * $e->rate_per_kg) }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
         {{-- Payments Table --}}
         <div class="card shadow-sm">
             <div class="card-body">
@@ -198,6 +190,4 @@
 
     </div>
 
-</body>
-
-</html>
+@endsection

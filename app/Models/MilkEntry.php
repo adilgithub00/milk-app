@@ -8,7 +8,8 @@ class MilkEntry extends Model
 {
     protected $fillable = [
         'entry_date',
-        'quantity_kg'
+        'quantity_kg',
+        'rate_per_kg',
     ];
 
     protected $casts = [

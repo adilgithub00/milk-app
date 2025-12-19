@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->date('entry_date')->unique();
             $table->decimal('quantity_kg', 6, 2);
+            $table->decimal('rate_per_kg', 8, 2);
             $table->timestamps();
         });
     }

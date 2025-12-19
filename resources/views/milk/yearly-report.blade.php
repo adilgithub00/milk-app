@@ -1,44 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <title>Yearly Milk Report</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+@section('title', 'Yearly Report')
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <style>
-        @media (max-width: 768px) {
-            h3 {
-                text-align: center;
-                font-size: 22px;
-            }
-
-            .btn {
-                width: 100%;
-                margin-bottom: 8px;
-            }
-
-            table {
-                font-size: 14px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            h3 {
-                font-size: 20px;
-            }
-
-            table {
-                font-size: 13px;
-            }
-        }
-    </style>
-
-</head>
-
-<body class="bg-light">
+@section('content')
 
     <div class="container py-4">
 
@@ -70,7 +34,7 @@
                         <tr>
                             <th>Month</th>
                             <th>Total Milk (KG)</th>
-                            <th>Rate</th>
+                            <th>Rates Used</th>
                             <th>Total Amount</th>
                             <th>Paid</th>
                             <th>Remaining</th>
@@ -82,12 +46,25 @@
                             <tr @if (strtolower($m['month']) == strtolower(now()->format('F'))) class="table-warning" @endif>
                                 <td>{{ $m['month'] }}</td>
                                 <td>{{ $m['kg'] }}</td>
-                                <td>{{ $m['rate'] }}</td>
-                                <td>{{ $m['total'] }}</td>
-                                <td>{{ $m['paid'] }}</td>
+                                <td>
+                                    @if (count($m['rates']) === 0)
+                                        <span class="text-muted">—</span>
+                                    @elseif(count($m['rates']) === 1)
+                                        {{ number_format($m['rates'][0], 2) }}
+                                    @else
+                                        <span class="badge bg-warning text-dark">
+                                            Multiple
+                                        </span>
+                                        <small class="text-muted d-block">
+                                            {{ implode(', ', $m['rates']) }}
+                                        </small>
+                                    @endif
+                                </td>
+                                <td>{{ number_format($m['total']) }}</td>
+                                <td>{{ number_format($m['paid']) }}</td>
                                 <td>
                                     @if ($m['remaining'] > 0)
-                                        <span class="text-danger">{{ $m['remaining'] }}</span>
+                                        <span class="text-danger">{{ number_format($m['remaining']) }}</span>
                                     @else
                                         <span class="text-success">0</span>
                                     @endif
@@ -102,6 +79,4 @@
         </div>
     </div>
 
-</body>
-
-</html>
+@endsection

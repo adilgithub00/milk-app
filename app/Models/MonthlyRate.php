@@ -9,6 +9,7 @@ class MonthlyRate extends Model
     protected $fillable = [
         'month',
         'year',
-        'rate_per_kg'
+        'rate_per_kg',
+        'is_active'
     ];
 }
