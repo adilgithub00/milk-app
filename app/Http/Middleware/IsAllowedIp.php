@@ -10,6 +10,12 @@ class IsAllowedIp
 {
     public function handle(Request $request, Closure $next)
     {
+        dd([
+            'ip()' => request()->ip(),
+            'ips()' => request()->ips(),
+            'headers' => request()->headers->all(),
+        ]);
+
         // Allow localhost for dev
         if (app()->isLocal()) {
             return $next($request);
