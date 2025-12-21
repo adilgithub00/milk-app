@@ -10,11 +10,6 @@ class IsAllowedIp
 {
     public function handle(Request $request, Closure $next)
     {
-        dd([
-            'ip()' => request()->ip(),
-            'ips()' => request()->ips(),
-            'headers' => request()->headers->all(),
-        ]);
 
         // Allow localhost for dev
         if (app()->isLocal()) {
@@ -28,11 +23,12 @@ class IsAllowedIp
 
         $allowedIps = array_map('trim', explode(',', config('admin.allowed_ips')));
 
+        $clientIp =  $request->header('X-Real-IP') ?? $request->header('X-Forwarded-For');
+
         if (!in_array($request->ip(), $allowedIps)) {
-            abort(403, 'This requests is restricted for you.' . $request->ip());
+            abort(403, 'This requests is restricted for you.' . $clientIp);
         }
 
-        // $origin = $request->header('Origin');
 
         return $next($request);
     }
