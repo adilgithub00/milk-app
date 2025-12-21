@@ -55,7 +55,14 @@
 
                         <button type="submit" class="btn btn-primary w-100">Register</button>
                     </form>
+                    <div class="mt-3 text-center">
+                        Already have an account?
+                        <a href="{{ route('login') }}">
+                            Login here
+                        </a>
+                    </div>
                 </div>
+
             </div>
         </div>
     </div>

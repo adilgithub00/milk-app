@@ -56,15 +56,9 @@ class CalculatorController extends Controller
         $year = now()->year;
 
         // Calculate total milk amount
-        $totalKg = MilkEntry::whereMonth('entry_date', $month)
-            ->whereYear('entry_date', $year)
-            ->sum('quantity_kg');
-
-        $rate = MonthlyRate::where('month', $month)
-            ->where('year', $year)
-            ->value('rate_per_kg') ?? 0;
-
-        $totalAmount = $totalKg * $rate;
+        $totalAmount = MilkEntry::whereYear('entry_date', $year)
+            ->whereMonth('entry_date', $month)
+            ->sum(DB::raw('quantity_kg * rate_per_kg'));
 
         $paid = Payment::whereMonth('payment_date', $month)
             ->whereYear('payment_date', $year)

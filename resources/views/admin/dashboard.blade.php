@@ -8,7 +8,9 @@
 
         <div class="row mb-3 align-items-center">
             <div class="col-md-6 mb-2 mb-md-0">
-                <h3 class="mb-4">Monthly Stats</h3>
+                <h3 class="mb-4">
+                    Monthly Stats — {{ \Carbon\Carbon::create($currentYear, $currentMonth)->format('F Y') }}
+                </h3>
             </div>
 
         </div>

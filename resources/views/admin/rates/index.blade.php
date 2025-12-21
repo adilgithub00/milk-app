@@ -13,19 +13,27 @@
 
 
         @if (session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
         @endif
 
+
         @if ($errors->any())
-            <div class="alert alert-danger">{{ $errors->first() }}</div>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ $errors->first() }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
         @endif
+
 
         <div class="d-flex justify-content-between align-items-center mb-3">
             <a href="{{ route('rates.create') }}" class="btn btn-primary btn-sm">
                 Add New Rate
             </a>
         </div>
-        
+
         <div class="card shadow-sm">
             <div class="card-body table-responsive">
 
@@ -67,14 +75,16 @@
                                             </form>
                                         @endif
 
-                                        <form action="{{ route('rates.destroy', $rate) }}" method="POST"
-                                            onsubmit="return confirm('Delete this rate?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button class="btn btn-sm btn-danger">
-                                                Delete
-                                            </button>
-                                        </form>
+                                        @if (!$rate->is_active)
+                                            <form action="{{ route('rates.destroy', $rate) }}" method="POST"
+                                                onsubmit="return confirm('Delete this rate?')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="btn btn-sm btn-danger">
+                                                    Delete
+                                                </button>
+                                            </form>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>

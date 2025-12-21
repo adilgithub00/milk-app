@@ -6,11 +6,13 @@ use App\Models\MilkEntry;
 use App\Models\MonthlyRate;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class MilkEntryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+     
         $currentMonth = now()->month;
         $currentYear = now()->year;
 
@@ -21,18 +23,32 @@ class MilkEntryController extends Controller
 
         $totalKg = $entries->sum('quantity_kg');
 
+        $monthlyRate = MonthlyRate::where('is_active', true)->first();
+
+        $activeRate = null;
+        if ($monthlyRate) {
+            $activeRate = $monthlyRate->rate_per_kg;
+        }
+
         return view('milk.calendar', compact(
             'entries',
             'totalKg',
             'currentMonth',
-            'currentYear'
+            'currentYear',
+            'activeRate'
         ));
     }
 
     public function store(Request $request)
     {
+
         $request->validate([
-            'entry_date' => 'required|date|before_or_equal:today',
+            'entry_date' => [
+                'required',
+                'date',
+                'after_or_equal:' . now()->startOfMonth()->toDateString(),
+                'before_or_equal:' . now()->toDateString(),
+            ],
             'quantity_kg' => 'required|numeric|min:0.1'
         ]);
 

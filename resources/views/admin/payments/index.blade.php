@@ -11,8 +11,8 @@
             </div>
         </div>
 
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
 
-        <div class="d-flex justify-content-between align-items-center mb-3">
             <a href="{{ route('payments.create') }}" class="btn btn-primary btn-sm">
                 Add Payment
             </a>
@@ -20,14 +20,21 @@
             <form method="GET" class="d-flex gap-2">
                 <input type="month" name="month" value="{{ $month->format('Y-m') }}"
                     class="form-control form-control-sm">
-                <button class="btn btn-sm btn-secondary">Filter</button>
+                <button class="btn btn-sm btn-secondary">
+                    Filter
+                </button>
             </form>
+
         </div>
 
 
         @if (session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
         @endif
+
 
         <div class="card shadow-sm">
             <div class="card-body table-responsive">

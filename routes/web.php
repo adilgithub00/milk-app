@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\Auth\AuthController;
 use App\Http\Controllers\Admin\AdminPaymentController;
+use App\Http\Controllers\Admin\AdminSettingsController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\MilkController;
 use App\Http\Controllers\Admin\MilkRateController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\CalculatorController;
 use App\Http\Controllers\MilkEntryController;
 use App\Http\Controllers\YearlyReportController;
 use App\Http\Middleware\IsAdmin;
+use App\Http\Middleware\IsAllowedIp;
 use App\Http\Middleware\PreventBackHistory;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
@@ -16,9 +18,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [MilkEntryController::class, 'index']);
-Route::post('/milk-entry', [MilkEntryController::class, 'store'])->name('milk.store');
+Route::post('/milk-entry', [MilkEntryController::class, 'store'])->name('milk.store')->middleware(IsAllowedIp::class);
 Route::get('/calculator', [CalculatorController::class, 'index']);
-Route::post('/payment', [CalculatorController::class, 'storePayment'])->name('payment.store');
+Route::post('/payment', [CalculatorController::class, 'storePayment'])->name('payment.store')->middleware(IsAllowedIp::class);
 Route::get('/yearly-report', [YearlyReportController::class, 'index']);
 
 Route::get('register', [AuthController::class, 'showRegisterForm'])->name('register');
@@ -42,12 +44,12 @@ Route::middleware(['auth', IsAdmin::class, PreventBackHistory::class])->prefix('
         Route::get('email', [AdminSettingsController::class, 'editEmail'])
             ->name('admin.settings.email');
 
-        Route::post('email', [AdminSettingsController::class, 'updateEmail']);
+        Route::post('email', [AdminSettingsController::class, 'updateEmail'])->name('settings.update.email');
 
         Route::get('password', [AdminSettingsController::class, 'editPassword'])
             ->name('admin.settings.password');
 
-        Route::post('password', [AdminSettingsController::class, 'updatePassword']);
+        Route::post('password', [AdminSettingsController::class, 'updatePassword'])->name('settings.update.password');
     });
 });
 

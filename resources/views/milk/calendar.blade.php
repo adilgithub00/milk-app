@@ -35,25 +35,32 @@
             <div class="card-body">
                 @php
                     $today = now()->format('Y-m-d');
+                    $monthStart = now()->startOfMonth()->format('Y-m-d');
+                    $monthEnd = now()->endOfMonth()->format('Y-m-d');
                 @endphp
                 <form method="POST" action="{{ route('milk.store') }}" class="row g-3 align-items-end">
                     @csrf
 
-                    <div class="col-md-4">
-
+                    <div class="col-md-3">
                         <label class="form-label">Date</label>
-                        <input type="date" name="entry_date" class="form-control" max="{{ $today }}"
-                            value="{{ old('entry_date', $today) }}" required>
+                        <input type="date" name="entry_date" class="form-control" min="{{ $monthStart }}"
+                            max="{{ $today }}" value="{{ old('entry_date', $today) }}" required>
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <label class="form-label">Milk (KG)</label>
                         <input type="text" name="quantity_kg" class="form-control" placeholder="Enter milk in KG"
                             required oninput="this.value = this.value.replace(/[^0-9.]/g,'');">
                     </div>
 
-                    <div class="col-md-4">
-                        <button class="btn btn-success w-100">
+
+                    <div class="col-md-3">
+                        <label class="form-label">Rate/KG</label>
+                        <input type="text" name="quantity_kg" class="form-control" disabled value="{{ $activeRate ?? 'Rate not set' }}">
+                    </div>
+
+                    <div class="col-md-3">
+                        <button class="btn btn-success w-100" @if (!$activeRate) disabled @endif>
                             Save Entry
                         </button>
                     </div>

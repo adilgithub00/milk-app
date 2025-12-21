@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>@yield('title', 'Admin')</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="{{ asset('favicon1.ico') }}">
 
     {{-- Bootstrap --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -65,19 +66,24 @@
             <button class="btn btn-outline-light" onclick="toggleSidebar()">
                 <i class="bi bi-list"></i>
             </button>
-            <span class="navbar-brand">Admin Panel</span>
+            <img src="{{ asset('logo.png') }}" height="50px" width="50px" alt="">
+            {{-- <span class="navbar-brand">Admin Panel</span> --}}
         </div>
     </nav>
 
     {{-- Sidebar --}}
     <div class="sidebar position-fixed p-3" id="sidebar">
-        <div class="mb-4">
-            <div class="fw-semibold text-white">
-                {{ Auth::user()->name }}
-            </div>
-            <small class="text-secondary">Administrator</small>
-        </div>
+        <div class="mb-4 d-flex align-items-center gap-3">
+            <img src="{{ asset('logo.png') }}" height="50" width="50" alt="Logo">
 
+            <div>
+                <div class="fw-semibold text-white">
+                    {{ Auth::user()->name }}
+                </div>
+                <small class="text-secondary">Administrator</small>
+            </div>
+        </div>
+        
         <ul class="nav nav-pills flex-column gap-1">
 
             {{-- Dashboard --}}
