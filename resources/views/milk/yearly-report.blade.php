@@ -16,7 +16,7 @@
             <div class="col-md-6 text-center text-md-end">
                 <div class="d-grid d-md-inline gap-2">
                     <a href="{{ url('/') }}" class="btn btn-primary btn-sm">
-                        Back to Calendar
+                        Monthly Calendar
                     </a>
                     <a href="{{ url('/calculator') }}" class="btn btn-primary btn-sm">
                         Monthly Calculator

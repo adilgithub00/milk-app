@@ -30,7 +30,7 @@
             <div class="col-md-6 text-center text-md-end">
                 <div class="d-grid d-md-inline gap-2">
                     <a href="{{ url('/') }}" class="btn btn-primary btn-sm">
-                        Back to Calendar
+                        Monthly Calendar
                     </a>
                     <a href="{{ url('/yearly-report') }}" class="btn btn-primary btn-sm">
                         Yearly Report
@@ -104,7 +104,6 @@
                     @csrf
                     <div class="col-md-4">
                         <label class="form-label">Payment Date</label>
-
                         <input type="date" name="payment_date" class="form-control" max="{{ $today }}"
                             value="{{ old('entry_date', $today) }}" required>
                     </div>
@@ -118,7 +117,7 @@
                             oninput="this.value = this.value.replace(/[^0-9]/g,'');
                     if(parseInt(this.value) > {{ $remaining }}) this.value = {{ $remaining }};">
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4" style="margin-top: 46px">
                         <button class="btn btn-primary w-100" type="submit"
                             @if ($remaining <= 0) disabled @endif>
                             Add Payment
@@ -139,7 +138,7 @@
                             <tr>
                                 <th>Date</th>
                                 <th>Milk (KG)</th>
-                                <th>Rate</th>
+                                <th>Rate/KG</th>
                                 <th>Amount</th>
                             </tr>
                         </thead>
