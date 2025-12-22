@@ -31,6 +31,15 @@
          margin-top: 5px;
      }
 
+     .calendar-day.milk-covered {
+         background-color: #d1e7dd;
+         /* light green */
+     }
+
+     .calendar-day.milk-partial {
+         background: #fff3cd;
+     }
+
      /* ---------------- MOBILE ---------------- */
      @media (max-width: 768px) {
          .calendar-grid {

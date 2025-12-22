@@ -56,7 +56,8 @@
 
                     <div class="col-md-3">
                         <label class="form-label">Rate/KG</label>
-                        <input type="text" name="quantity_kg" class="form-control" disabled value="{{ $activeRate ?? 'Rate not set' }}">
+                        <input type="text" name="quantity_kg" class="form-control" disabled
+                            value="{{ $activeRate ?? 'Rate not set' }}">
                     </div>
 
                     <div class="col-md-3">
@@ -82,15 +83,25 @@
                         ->addDays($day - 1)
                         ->format('Y-m-d');
                     $entry = $entries[$date] ?? null;
+                    $coverage = $coverageMap[$date] ?? null;
+                    $tooltip = $tooltips[$date] ?? null;
                 @endphp
 
-                <div class="calendar-day {{ $entry ? 'has-milk' : '' }}">
+                <div class="calendar-day {{ $entry ? 'has-milk' : '' }} {{ !$entry && $coverage === 'full' ? 'milk-covered' : '' }} {{ !$entry && $coverage === 'partial' ? 'milk-partial' : '' }}"
+                    @if ($tooltip) data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        title="{{ $tooltip }}" @endif>
+
                     <div class="day-number">{{ $day }}</div>
 
                     @if ($entry)
                         <span class="badge bg-success kg-badge mt-2">
                             {{ $entry->quantity_kg }} kg
                         </span>
+                    @elseif($coverage === 'full')
+                        <span class="is-coverede text-success small">Covered</span>
+                    @elseif($coverage === 'partial')
+                        <span class="is-coverede text-success small">Partial</span>
                     @else
                         <span class="text-muted small">No milk</span>
                     @endif

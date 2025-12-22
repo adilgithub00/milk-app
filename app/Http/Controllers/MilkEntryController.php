@@ -12,36 +12,80 @@ class MilkEntryController extends Controller
 {
     public function index(Request $request)
     {
-     
         $currentMonth = now()->month;
         $currentYear = now()->year;
 
-        $entries = MilkEntry::whereMonth('entry_date', $currentMonth)
+        // 1️⃣ Plain collection (logic ke liye)
+        $entriesCollection = MilkEntry::whereMonth('entry_date', $currentMonth)
             ->whereYear('entry_date', $currentYear)
-            ->get()
-            ->keyBy(fn($item) => $item->entry_date->format('Y-m-d'));
+            ->get();
 
-        $totalKg = $entries->sum('quantity_kg');
+        // 2️⃣ Keyed collection (Blade ke liye)
+        $entries = $entriesCollection->keyBy(fn($item) =>
+            $item->entry_date->format('Y-m-d'));
+
+        $totalKg = $entriesCollection->sum('quantity_kg');
 
         $monthlyRate = MonthlyRate::where('is_active', true)->first();
+        $activeRate = $monthlyRate?->rate_per_kg;
 
-        $activeRate = null;
-        if ($monthlyRate) {
-            $activeRate = $monthlyRate->rate_per_kg;
+        // =========================
+        // AUTO CARRY-OVER LOGIC
+        // =========================
+
+        $perDayKg = 2;
+
+        $coverageMap = [];
+        $tooltips = [];
+
+        $currentStockKg = 0;
+        $currentSourceDay = null;
+
+        $entriesByDate = $entriesCollection->groupBy(fn($e) =>
+            $e->entry_date->format('Y-m-d'));
+
+        $startDate = now()->startOfMonth();
+        $endDate = now()->endOfMonth();
+
+        for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
+            $dateKey = $date->format('Y-m-d');
+
+            // Add milk of the day
+            if ($entriesByDate->has($dateKey)) {
+                foreach ($entriesByDate[$dateKey] as $entry) {
+                    $currentStockKg += $entry->quantity_kg;
+                    $currentSourceDay = $entry->entry_date->format('d M Y');
+                }
+            }
+
+            // Consume milk
+            if ($currentStockKg >= $perDayKg) {
+                $coverageMap[$dateKey] = 'full';
+                $tooltips[$dateKey] =
+                    "Covered (2kg) from {$currentSourceDay}";
+                $currentStockKg -= $perDayKg;
+            } elseif ($currentStockKg > 0) {
+                $coverageMap[$dateKey] = 'partial';
+                $tooltips[$dateKey] =
+                    "Partially covered ({$currentStockKg}kg) from {$currentSourceDay}";
+                $currentStockKg = 0;
+            }
         }
 
         return view('milk.calendar', compact(
             'entries',
+            'entriesCollection',
             'totalKg',
             'currentMonth',
             'currentYear',
-            'activeRate'
+            'activeRate',
+            'coverageMap',
+            'tooltips'
         ));
     }
 
     public function store(Request $request)
     {
-
         $request->validate([
             'entry_date' => [
                 'required',

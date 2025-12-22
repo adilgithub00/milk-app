@@ -3,16 +3,55 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\MilkEntry;
+use App\Models\Payment;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class MilkController extends Controller
 {
     public function index()
     {
-        $entries = MilkEntry::orderByDesc('entry_date')->paginate(15);
+        $year = now()->year;
+        $months = [];
 
-        return view('admin.milk_entries.index', compact('entries'));
+        for ($month = 1; $month <= 12; $month++) {
+            $entries = MilkEntry::whereYear('entry_date', $year)
+                ->whereMonth('entry_date', $month)
+                ->orderBy('entry_date')
+                ->get();
+
+            $totalKg = $entries->sum('quantity_kg');
+            $totalAmount = $entries->sum(fn($e) => $e->quantity_kg * $e->rate_per_kg);
+
+            $paid = Payment::whereYear('payment_date', $year)
+                ->whereMonth('payment_date', $month)
+                ->sum('amount');
+
+            $remaining = $totalAmount - $paid;
+
+            // Group rates used in this month
+            $ratesUsed = $entries->pluck('rate_per_kg')->unique()->values()->all();
+
+            $months[] = [
+                'month' => Carbon::create($year, $month)->format('F'),
+                'totalKg' => $totalKg,
+                'totalAmount' => $totalAmount,
+                'paid' => $paid,
+                'remaining' => $remaining,
+                'ratesUsed' => $ratesUsed,
+                'dailyEntries' => $entries,
+            ];
+        }
+
+        return view('admin.milk_entries.index', compact('months', 'year'));
     }
+
+    // public function index()
+    // {
+    //     $entries = MilkEntry::orderByDesc('entry_date')->paginate(15);
+
+    //     return view('admin.milk_entries.index', compact('entries'));
+    // }
 
     public function edit(MilkEntry $milk_entry)
     {

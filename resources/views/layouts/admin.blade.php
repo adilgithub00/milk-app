@@ -13,49 +13,8 @@
     {{-- Icons --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
-    <style>
-        body {
-            overflow-x: hidden;
-        }
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
 
-        .sidebar {
-            width: 250px;
-            min-height: 100vh;
-            background: #212529;
-        }
-
-        .sidebar a {
-            color: #adb5bd;
-            text-decoration: none;
-        }
-
-        .sidebar a.active,
-        .sidebar a:hover {
-            background: #343a40;
-            color: #fff;
-        }
-
-        .content {
-            margin-left: 250px;
-        }
-
-        @media (max-width: 768px) {
-            .sidebar {
-                position: fixed;
-                left: -250px;
-                transition: all 0.3s;
-                z-index: 1000;
-            }
-
-            .sidebar.show {
-                left: 0;
-            }
-
-            .content {
-                margin-left: 0;
-            }
-        }
-    </style>
 </head>
 
 <body>
@@ -83,7 +42,7 @@
                 <small class="text-secondary">Administrator</small>
             </div>
         </div>
-        
+
         <ul class="nav nav-pills flex-column gap-1">
 
             {{-- Dashboard --}}
