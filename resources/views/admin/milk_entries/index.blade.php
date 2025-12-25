@@ -96,10 +96,70 @@
                                                                                     onsubmit="return confirm('Delete this entry?')">
                                                                                     @csrf
                                                                                     @method('DELETE')
-                                                                                    <button class="btn btn-sm btn-danger">
+                                                                                    {{-- <button class="btn btn-sm btn-danger">
+                                                                                        Delete
+                                                                                    </button> --}}
+
+                                                                                    <button type="button"
+                                                                                        class="btn btn-sm btn-danger delete-btn"
+                                                                                        data-bs-toggle="modal"
+                                                                                        data-bs-target="#confirmDeleteModal"
+                                                                                        data-date="{{ $d->entry_date->format('d M Y') }}"
+                                                                                        data-amount="{{ number_format($d->quantity_kg * $d->rate_per_kg) }}"
+                                                                                        data-action="{{ route('milk-entries.destroy', $d) }}">
                                                                                         Delete
                                                                                     </button>
+
+
                                                                                 </form>
+
+                                                                                {{-- Popup Model Start --}}
+                                                                                <div class="modal fade"
+                                                                                    id="confirmDeleteModal" tabindex="-1">
+                                                                                    <div
+                                                                                        class="modal-dialog modal-dialog-centered">
+                                                                                        <div class="modal-content">
+
+                                                                                            <div class="modal-header">
+                                                                                                <h5 class="modal-title">
+                                                                                                    Confirm Delete</h5>
+                                                                                                <button class="btn-close"
+                                                                                                    data-bs-dismiss="modal"></button>
+                                                                                            </div>
+
+                                                                                            <div class="modal-body">
+                                                                                                <p>Are you sure you want to
+                                                                                                    delete this Entry?</p>
+                                                                                                <ul>
+                                                                                                    <li><strong>Date:</strong>
+                                                                                                        <span
+                                                                                                            id="confirmDate"></span>
+                                                                                                    </li>
+                                                                                                    <li><strong>Amount:</strong>
+                                                                                                        <span
+                                                                                                            id="confirmAmount"></span>
+                                                                                                    </li>
+                                                                                                </ul>
+                                                                                            </div>
+
+                                                                                            <div class="modal-footer">
+                                                                                                <button
+                                                                                                    class="btn btn-secondary"
+                                                                                                    data-bs-dismiss="modal">Cancel</button>
+
+                                                                                                <form id="deletePaymentForm"
+                                                                                                    method="POST">
+                                                                                                    @csrf
+                                                                                                    @method('DELETE')
+                                                                                                    <button
+                                                                                                        class="btn btn-danger">Confirm</button>
+                                                                                                </form>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                {{-- Popup Model End --}}
                                                                             </div>
                                                                         </td>
                                                                     </tr>

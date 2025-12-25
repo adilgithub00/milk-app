@@ -80,6 +80,7 @@
                                                         <thead class="table-light">
                                                             <tr>
                                                                 <th>Date</th>
+                                                                <th>Day</th>
                                                                 <th>Milk (KG)</th>
                                                                 <th>Rate</th>
                                                                 <th>Amount</th>
@@ -89,6 +90,8 @@
                                                             @foreach ($m['dailyEntries'] as $d)
                                                                 <tr>
                                                                     <td>{{ $d['date'] }}</td>
+                                                                    <td>{{ \Carbon\Carbon::parse($d['date'])->translatedFormat('D') }}
+                                                                    </td>
                                                                     <td>{{ $d['kg'] }}</td>
                                                                     <td>{{ $d['rate'] }}</td>
                                                                     <td>{{ number_format($d['amount']) }}</td>

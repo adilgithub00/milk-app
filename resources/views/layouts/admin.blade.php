@@ -131,11 +131,74 @@
         </main>
     </div>
 
+
+    {{-- Footer --}}
     <script>
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('show');
         }
     </script>
+
+    {{-- Delete payment confirmation popup --}}
+    <script>
+        document.querySelectorAll('.delete-btn').forEach(button => {
+            button.addEventListener('click', function() {
+
+                document.getElementById('confirmDate').innerText =
+                    this.dataset.date;
+
+                document.getElementById('confirmAmount').innerText =
+                    this.dataset.amount;
+
+                document.getElementById('deletePaymentForm').action =
+                    this.dataset.action;
+            });
+        });
+    </script>
+
+
+    <script>
+        document.querySelectorAll('.update-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                // Get input fields
+                const dateInput = document.querySelector('input[name="payment_date"]') ??  document.querySelector('input[name="entry_date"]');
+                const amountInput = document.querySelector('input[name="amount"]') ?? document.querySelector('input[name="quantity_kg"]');
+
+                // Format date if needed (optional)
+                const date = new Date(dateInput.value);
+                const options = {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric'
+                };
+                const formattedDate = date.toLocaleDateString('en-US', options); // 26 Dec 2025
+
+                // Set modal text
+                document.getElementById('confirmDate').innerText = formattedDate;
+                document.getElementById('confirmAmount').innerText = amountInput.value;
+
+                // Set confirm button to submit the form
+                const form = dateInput.closest('form');
+                document.getElementById('confirmUpdateBtn').onclick = function() {
+                    form.submit();
+                };
+            });
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const alerts = document.querySelectorAll('.alert');
+
+            alerts.forEach(function(alert) {
+                setTimeout(function() {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                }, 5000); // 5 seconds
+            });
+        });
+    </script>
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 

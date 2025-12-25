@@ -32,12 +32,43 @@
                             disabled>
                     </div>
 
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-primary">Update</button>
-                        <a href="{{ route('milk-entries.index') }}" class="btn btn-secondary">Cancel</a>
-                    </div>
+                    <button type="button" class="btn btn-primary update-btn" data-bs-toggle="modal"
+                        data-bs-target="#confirmPaymentModal">
+                        Update
+                    </button>
+
+
+                    <a href="{{ route('milk-entries.index') }}" class="btn btn-secondary">Cancel</a>
 
                 </form>
+
+                {{-- Popup Model Start --}}
+                <div class="modal fade" id="confirmPaymentModal" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+
+                            <div class="modal-header">
+                                <h5 class="modal-title">Confirm Update</h5>
+                                <button class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+
+                            <div class="modal-body">
+                                <p>Are you sure you want to update this Entry?</p>
+                                <ul>
+                                    <li><strong>Date:</strong> <span id="confirmDate"></span></li>
+                                    <li><strong>Quantity:</strong> <span id="confirmAmount"></span> KG</li>
+                                </ul>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-primary" id="confirmUpdateBtn">Confirm</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                {{-- Popup Model End --}}
 
             </div>
         </div>

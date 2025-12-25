@@ -82,6 +82,7 @@
                         ->copy()
                         ->addDays($day - 1)
                         ->format('Y-m-d');
+                    $dayName = \Carbon\Carbon::parse($date)->translatedFormat('D');
                     $entry = $entries[$date] ?? null;
                     $coverage = $coverageMap[$date] ?? null;
                     $tooltip = $tooltips[$date] ?? null;
@@ -93,6 +94,7 @@
                         title="{{ $tooltip }}" @endif>
 
                     <div class="day-number">{{ $day }}</div>
+                    <div class="day-name">{{ $dayName }}</div>
 
                     @if ($entry)
                         <span class="badge bg-success kg-badge mt-2">

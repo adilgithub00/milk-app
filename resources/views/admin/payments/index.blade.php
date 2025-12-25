@@ -51,8 +51,8 @@
                     <tbody>
                         @forelse($payments as $p)
                             <tr>
-                                <td>{{ $p->payment_date->format('d M Y') }}</td>
-                                <td>{{ number_format($p->amount) }}</td>
+                                <td class="payment-date">{{ $p->payment_date->format('d M Y') }}</td>
+                                <td class="amount">{{ number_format($p->amount) }}</td>
                                 <td>
                                     <div class="d-flex gap-1">
                                         <a href="{{ route('payments.edit', $p) }}" class="btn btn-sm btn-warning">
@@ -63,10 +63,52 @@
                                             onsubmit="return confirm('Delete payment?')">
                                             @csrf
                                             @method('DELETE')
-                                            <button class="btn btn-sm btn-danger">
+
+                                            <button type="button" class="btn btn-sm btn-danger delete-btn"
+                                                data-bs-toggle="modal" data-bs-target="#confirmDeleteModal"
+                                                data-date="{{ $p->payment_date->format('d M Y') }}"
+                                                data-amount="{{ number_format($p->amount) }}"
+                                                data-action="{{ route('payments.destroy', $p) }}">
                                                 Delete
                                             </button>
+
                                         </form>
+
+                                        {{-- Popup Model Start --}}
+                                        <div class="modal fade" id="confirmDeleteModal" tabindex="-1">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Confirm Delete</h5>
+                                                        <button class="btn-close" data-bs-dismiss="modal"></button>
+                                                    </div>
+
+                                                    <div class="modal-body">
+                                                        <p>Are you sure you want to delete this payment?</p>
+                                                        <ul>
+                                                            <li><strong>Date:</strong> <span id="confirmDate"></span></li>
+                                                            <li><strong>Amount:</strong> <span id="confirmAmount"></span>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+
+                                                    <div class="modal-footer">
+                                                        <button class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Cancel</button>
+
+                                                        <form id="deletePaymentForm" method="POST">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button class="btn btn-danger">Confirm</button>
+                                                        </form>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {{-- Popup Model End --}}
+
                                     </div>
                                 </td>
                             </tr>
