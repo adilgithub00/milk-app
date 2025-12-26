@@ -62,6 +62,24 @@
     </script>
 
 
+    {{-- Add payment confirmation popup from report section --}}
+    <script>
+        document.querySelectorAll('.payment-btn').forEach(button => {
+            button.addEventListener('click', function() {
+
+                document.getElementById('confirmDate').innerText =
+                    this.dataset.date;
+
+                document.getElementById('confirmAmount').innerText =
+                    this.dataset.amount;
+
+                document.getElementById('addPaymentForm').action =
+                    this.dataset.action;
+            });
+        });
+    </script>
+
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const alerts = document.querySelectorAll('.alert');

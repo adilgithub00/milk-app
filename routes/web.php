@@ -9,12 +9,12 @@ use App\Http\Controllers\Admin\MilkRateController;
 use App\Http\Controllers\CalculatorController;
 use App\Http\Controllers\MilkEntryController;
 use App\Http\Controllers\YearlyReportController;
+use App\Http\Controllers\YearlyPaymentController;
 use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\IsAllowedIp;
 use App\Http\Middleware\PreventBackHistory;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [MilkEntryController::class, 'index']);
@@ -22,6 +22,8 @@ Route::post('/milk-entry', [MilkEntryController::class, 'store'])->name('milk.st
 Route::get('/calculator', [CalculatorController::class, 'index']);
 Route::post('/payment', [CalculatorController::class, 'storePayment'])->name('payment.store')->middleware(IsAllowedIp::class);
 Route::get('/yearly-report', [YearlyReportController::class, 'index']);
+Route::get('/yearly-payments', [YearlyPaymentController::class, 'index']);
+
 
 Route::get('register', [AuthController::class, 'showRegisterForm'])->name('register');
 Route::post('register', [AuthController::class, 'register'])->name('register.submit');

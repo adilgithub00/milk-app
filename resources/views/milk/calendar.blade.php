@@ -20,11 +20,17 @@
 
             <div class="col-md-4 text-center text-md-end">
                 <div class="d-grid d-md-inline gap-2">
+
                     <a href="{{ url('/calculator') }}" class="btn btn-primary btn-sm">
                         Monthly Calculator
                     </a>
+
                     <a href="{{ url('/yearly-report') }}" class="btn btn-primary btn-sm">
                         Yearly Report
+                    </a>
+
+                    <a href="{{ url('/yearly-payments') }}" class="btn btn-primary btn-sm">
+                        Yearly payments
                     </a>
                 </div>
             </div>

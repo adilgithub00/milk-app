@@ -25,11 +25,17 @@
 
             <div class="col-md-6 text-center text-md-end">
                 <div class="d-grid d-md-inline gap-2">
+
                     <a href="{{ url('/') }}" class="btn btn-primary btn-sm">
                         Monthly Calendar
                     </a>
+
                     <a href="{{ url('/yearly-report') }}" class="btn btn-primary btn-sm">
                         Yearly Report
+                    </a>
+
+                    <a href="{{ url('/yearly-payments') }}" class="btn btn-primary btn-sm">
+                        Yearly payments
                     </a>
                 </div>
             </div>
@@ -100,6 +106,8 @@
             <div class="card-body">
                 @php
                     $today = now()->format('Y-m-d');
+                    $monthStart = now()->startOfMonth()->format('Y-m-d');
+                    $monthEnd = now()->endOfMonth()->format('Y-m-d');
                 @endphp
 
                 <h5>Add Payment</h5>
@@ -107,9 +115,10 @@
                     @csrf
                     <div class="col-md-4">
                         <label class="form-label">Payment Date</label>
-                        <input type="date" name="payment_date" class="form-control" max="{{ $today }}"
-                            value="{{ old('entry_date', $today) }}" required>
+                        <input type="date" name="payment_date" class="form-control" min="{{ $today }}"
+                            max="{{ $today }}" value="{{ old('entry_date', $today) }}" required>
                     </div>
+
                     <div class="col-md-4">
                         <label class="form-label">Amount</label>
                         @if ($remaining > 0)
@@ -120,6 +129,7 @@
                             oninput="this.value = this.value.replace(/[^0-9]/g,'');
                     if(parseInt(this.value) > {{ $remaining }}) this.value = {{ $remaining }};">
                     </div>
+
                     <div class="col-md-4" style="margin-top: 46px">
                         <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal"
                             data-bs-target="#confirmPaymentModal" @if ($remaining <= 0) disabled @endif>

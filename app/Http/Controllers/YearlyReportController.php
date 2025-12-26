@@ -5,16 +5,19 @@ namespace App\Http\Controllers;
 use App\Models\MilkEntry;
 use App\Models\Payment;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class YearlyReportController extends Controller
 {
     public function index()
     {
         $year = now()->year;
+        $currentMonth = now()->month;
+
         $months = [];
 
-        for ($month = 1; $month <= 12; $month++) {
+        for ($month = 1; $month <= $currentMonth; $month++) {
+
             $entries = MilkEntry::whereYear('entry_date', $year)
                 ->whereMonth('entry_date', $month)
                 ->orderBy('entry_date')
