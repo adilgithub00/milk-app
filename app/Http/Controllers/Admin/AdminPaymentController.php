@@ -2,9 +2,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\MilkEntry;
 use App\Models\Payment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class AdminPaymentController extends Controller
 {
@@ -16,7 +19,7 @@ class AdminPaymentController extends Controller
 
         $payments = Payment::whereYear('payment_date', $month->year)
             ->whereMonth('payment_date', $month->month)
-            ->orderByDesc('payment_date')
+            ->orderBy('payment_date')
             ->get();
 
         $total = $payments->sum('amount');
@@ -36,6 +39,20 @@ class AdminPaymentController extends Controller
             'amount' => 'required|integer|min:1'
         ]);
 
+        $monthStart = Carbon::parse($request->payment_date)->startOfMonth();
+        $monthEnd = Carbon::parse($request->payment_date)->endOfMonth();
+
+        $total = MilkEntry::whereBetween('entry_date', [$monthStart, $monthEnd])
+            ->sum(DB::raw('quantity_kg * rate_per_kg'));
+
+        $paid = Payment::whereBetween('payment_date', [$monthStart, $monthEnd])
+            ->sum('amount');
+
+        Log::info('info', ['total' => $total, 'paid' => $paid]);
+        if ($request->amount > ($total - $paid)) {
+            return back()->withErrors('Amount exceeds remaining balance.');
+        }
+
         Payment::create($request->only('payment_date', 'amount'));
 
         return redirect()
@@ -54,6 +71,20 @@ class AdminPaymentController extends Controller
             'payment_date' => 'required|date|before_or_equal:today',
             'amount' => 'required|integer|min:1'
         ]);
+
+        $monthStart = Carbon::parse($request->payment_date)->startOfMonth();
+        $monthEnd = Carbon::parse($request->payment_date)->endOfMonth();
+
+        $total = MilkEntry::whereBetween('entry_date', [$monthStart, $monthEnd])
+            ->sum(DB::raw('quantity_kg * rate_per_kg'));
+
+        $paid = Payment::whereBetween('payment_date', [$monthStart, $monthEnd])
+            ->where('id', '!=', $payment->id)
+            ->sum('amount');
+
+        if ($request->amount > ($total - $paid)) {
+            return back()->withErrors('Amount exceeds remaining balance.');
+        }
 
         $payment->update($request->only('payment_date', 'amount'));
 

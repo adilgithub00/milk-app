@@ -64,20 +64,51 @@
 
     {{-- Add payment confirmation popup from report section --}}
     <script>
-        document.querySelectorAll('.payment-btn').forEach(button => {
-            button.addEventListener('click', function() {
+        document.getElementById('paymentModal').addEventListener('show.bs.modal', function(event) {
 
-                document.getElementById('confirmDate').innerText =
-                    this.dataset.date;
+            const button = event.relatedTarget;
 
-                document.getElementById('confirmAmount').innerText =
-                    this.dataset.amount;
+            const remaining = parseInt(button.getAttribute('data-remaining'));
+            const start = button.getAttribute('data-start');
+            const end = button.getAttribute('data-end');
 
-                document.getElementById('addPaymentForm').action =
-                    this.dataset.action;
-            });
+            const dateInput = document.getElementById('paymentDate');
+            const amountInput = document.getElementById('paymentAmount');
+            const submitBtn = document.querySelector('#paymentModal .btn-success');
+
+            // Disable submit if remaining <= 0
+            if (remaining <= 0) {
+                submitBtn.disabled = true;
+            } else {
+                submitBtn.disabled = false;
+            }
+
+            // Date restrictions
+            dateInput.min = start;
+            dateInput.max = end;
+
+            const today = new Date().toISOString().split('T')[0];
+
+            if (today >= start && today <= end) {
+                dateInput.value = today;
+            } else if (today > end) {
+                dateInput.value = end;
+            } else {
+                dateInput.value = start;
+            }
+
+            // Amount logic
+            amountInput.value = remaining;
+            amountInput.oninput = function() {
+                this.value = this.value.replace(/[^0-9]/g, '');
+                if (parseInt(this.value) > remaining) {
+                    this.value = remaining;
+                }
+            };
         });
     </script>
+
+
 
 
     <script>

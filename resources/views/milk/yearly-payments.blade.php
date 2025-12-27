@@ -33,6 +33,24 @@
             </div>
         </div>
 
+        @if ($errors->any())
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        @if (session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
         <div class="card shadow-sm">
             <div class="card-body table-responsive">
 
@@ -57,13 +75,15 @@
                                 </td>
                                 <td>
                                     @if ($m['remaining'] > 0 || ($m['remaining'] > 0 && $lastMonth === $m['month']))
-                                        <button type="button" class="btn btn-sm btn-primary payment-btn"
-                                            data-bs-toggle="modal" data-bs-target="#confirmPaymenteModal"
-                                            data-date="{{ $m['month'] }}"
-                                            data-amount="{{ number_format($m['remaining']) }}"
-                                            data-action="{{ route('payment.store') }}">
+                                        <button class="btn btn-sm btn-primary mt-1" data-bs-toggle="modal"
+                                            data-bs-target="#paymentModal" data-month="{{ $m['month'] }}"
+                                            data-remaining="{{ $m['remaining'] }}"
+                                            data-start="{{ \Carbon\Carbon::parse('01 ' . $m['month'])->startOfMonth()->toDateString() }}"
+                                            data-end="{{ \Carbon\Carbon::parse('01 ' . $m['month'])->endOfMonth()->toDateString() }}">
                                             Add Payment
                                         </button>
+                                    @elseif($m['totalAmount'] > 0 && $m['paid'] == $m['totalAmount'])
+                                        <small class="text-muted">Payment Done</small>
                                     @else
                                         <small class="text-muted">Not Available</small>
                                     @endif
@@ -119,37 +139,39 @@
                 </table>
 
                 {{-- Popup Model Start --}}
-                <div class="modal fade" id="confirmPaymenteModal" tabindex="-1">
+                <div class="modal fade" id="paymentModal" tabindex="-1">
                     <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
+                        <form method="POST" action="{{ route('payment.store') }}" class="modal-content">
+                            @csrf
 
                             <div class="modal-header">
-                                <h5 class="modal-title">Confirm Delete</h5>
-                                <button class="btn-close" data-bs-dismiss="modal"></button>
+                                <h5 class="modal-title">Add Payment</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
 
                             <div class="modal-body">
-                                <p>Are you sure you want to delete this payment?</p>
-                                <ul>
-                                    <li><strong>Date:</strong> <span id="confirmDate"></span></li>
-                                    <li><strong>Amount:</strong> <span id="confirmAmount"></span>
-                                    </li>
-                                </ul>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Payment Date</label>
+                                    <input type="date" name="payment_date" id="paymentDate" class="form-control"
+                                        required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Amount</label>
+                                    <input type="text" name="amount" id="paymentAmount" class="form-control" required>
+                                </div>
+
                             </div>
 
                             <div class="modal-footer">
-                                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-
-                                <form id="addPaymentForm" method="POST">
-                                    @csrf
-                                    @method('POST')
-                                    <button class="btn btn-danger">Confirm</button>
-                                </form>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button class="btn btn-success">Confirm Payment</button>
                             </div>
-
-                        </div>
+                        </form>
                     </div>
                 </div>
+
                 {{-- Popup Model End --}}
 
             </div>

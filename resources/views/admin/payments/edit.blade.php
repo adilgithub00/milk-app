@@ -7,6 +7,17 @@
 
         <h4 class="mb-3">Edit Payment</h4>
 
+        @if ($errors->any())
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <div class="card shadow-sm">
             <div class="card-body">
 
@@ -31,7 +42,6 @@
                         data-bs-target="#confirmPaymentModal">
                         Update
                     </button>
-
 
                     <a href="{{ route('payments.index') }}" class="btn btn-secondary">Cancel</a>
 
