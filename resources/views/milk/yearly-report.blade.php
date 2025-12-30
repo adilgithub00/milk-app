@@ -9,8 +9,9 @@
         <div class="row mb-3 align-items-center">
             <div class="col-md-6 mb-2 mb-md-0">
                 <h3 class="text-center text-md-start">
-                    Yearly Milk Report — {{ $year }}
+                    Milk Report (Last 12 Months)
                 </h3>
+                <p class="text-muted">{{ $range }}</p>
             </div>
 
             <div class="col-md-6 text-center text-md-end">

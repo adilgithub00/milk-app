@@ -11,31 +11,39 @@ class YearlyReportController extends Controller
 {
     public function index()
     {
-        $year = now()->year;
-        $currentMonth = now()->month;
+        // 🔑 Safe rolling 12 months window
+        $end = now()->copy()->endOfMonth();
+        $start = now()->copy()->startOfMonth()->subMonths(11);
 
         $months = [];
+        $cursor = $start->copy();
 
-        for ($month = 1; $month <= $currentMonth; $month++) {
+        while ($cursor <= $end) {
+            $monthStart = $cursor->copy()->startOfMonth();
+            $monthEnd = $cursor->copy()->endOfMonth();
 
-            $entries = MilkEntry::whereYear('entry_date', $year)
-                ->whereMonth('entry_date', $month)
+            // Milk entries for this month
+            $entries = MilkEntry::whereBetween('entry_date', [$monthStart, $monthEnd])
                 ->orderBy('entry_date')
                 ->get();
 
             $totalKg = $entries->sum('quantity_kg');
             $totalAmount = $entries->sum(fn($e) => $e->quantity_kg * $e->rate_per_kg);
 
-            $paid = Payment::whereYear('payment_date', $year)
-                ->whereMonth('payment_date', $month)
+            // Payments for this month
+            $paid = Payment::whereBetween('payment_date', [$monthStart, $monthEnd])
                 ->sum('amount');
 
             $remaining = $totalAmount - $paid;
 
-            // Group rates used in this month
-            $ratesUsed = $entries->pluck('rate_per_kg')->unique()->values()->all();
+            // Rates used in this month
+            $ratesUsed = $entries
+                ->pluck('rate_per_kg')
+                ->unique()
+                ->values()
+                ->all();
 
-            // Store daily breakdown too
+            // Daily breakdown
             $dailyEntries = $entries->map(fn($e) => [
                 'date' => $e->entry_date->format('d-m-Y'),
                 'kg' => $e->quantity_kg,
@@ -44,7 +52,7 @@ class YearlyReportController extends Controller
             ]);
 
             $months[] = [
-                'month' => Carbon::create($year, $month)->format('F'),
+                'month' => $cursor->format('F Y'),  // 👈 year included
                 'totalKg' => $totalKg,
                 'totalAmount' => $totalAmount,
                 'paid' => $paid,
@@ -52,8 +60,12 @@ class YearlyReportController extends Controller
                 'ratesUsed' => $ratesUsed,
                 'dailyEntries' => $dailyEntries,
             ];
+
+            $cursor->addMonth();
         }
 
-        return view('milk.yearly-report', compact('months', 'year'));
+        $range = $start->format('M Y') . ' - ' . $end->format('M Y');
+
+        return view('milk.yearly-report', compact('months', 'range'));
     }
 }

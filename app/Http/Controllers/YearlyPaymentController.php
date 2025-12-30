@@ -12,7 +12,7 @@ class YearlyPaymentController extends Controller
     public function index()
     {
         $end = now()->copy()->endOfMonth();  // current month end
-        $start = now()->copy()->subMonths(11)->startOfMonth();  // 12 months window
+        $start = now()->copy()->startOfMonth()->subMonths(11);  // 12 months window
         $lastMonth = now()->subMonth()->format('F Y');
 
         // Log::info('endstartlast', ['end' => $end, 'start' => $start, 'last' => $last]);

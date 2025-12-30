@@ -80,6 +80,7 @@
             @php
                 $start = now()->startOfMonth();
                 $days = now()->daysInMonth;
+                $today = now()->day;
             @endphp
 
             @for ($day = 1; $day <= $days; $day++)
@@ -94,7 +95,7 @@
                     $tooltip = $tooltips[$date] ?? null;
                 @endphp
 
-                <div class="calendar-day {{ $entry ? 'has-milk' : '' }} {{ !$entry && $coverage === 'full' ? 'milk-covered' : '' }} {{ !$entry && $coverage === 'partial' ? 'milk-partial' : '' }}"
+                <div class="calendar-day {{ $entry ? 'has-milk' : '' }} {{ !$entry && $coverage === 'full' ? 'milk-covered' : '' }} {{ !$entry && $coverage === 'partial' ? 'milk-partial' : '' }} {{$day === $today ? 'today-highlight' : ''}}"
                     @if ($tooltip) data-bs-toggle="tooltip"
                         data-bs-placement="top"
                         title="{{ $tooltip }}" @endif>
