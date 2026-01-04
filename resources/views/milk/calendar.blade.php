@@ -16,6 +16,10 @@
                 <span class="badge bg-primary fs-6 py-2 px-3">
                     Total Milk: {{ $totalKg }} kg
                 </span>
+                <br>
+                <span class="badge bg-info">
+                    Daily Consumption: {{ \App\Models\Setting::get('milk_per_day_kg') }} kg
+                </span>
             </div>
 
             <div class="col-md-4 text-center text-md-end">
@@ -95,7 +99,7 @@
                     $tooltip = $tooltips[$date] ?? null;
                 @endphp
 
-                <div class="calendar-day {{ $entry ? 'has-milk' : '' }} {{ !$entry && $coverage === 'full' ? 'milk-covered' : '' }} {{ !$entry && $coverage === 'partial' ? 'milk-partial' : '' }} {{$day === $today ? 'today-highlight' : ''}}"
+                <div class="calendar-day {{ $entry ? 'has-milk' : '' }} {{ !$entry && $coverage === 'full' ? 'milk-covered' : '' }} {{ !$entry && $coverage === 'partial' ? 'milk-partial' : '' }} {{ $day === $today ? 'today-highlight' : '' }}"
                     @if ($tooltip) data-bs-toggle="tooltip"
                         data-bs-placement="top"
                         title="{{ $tooltip }}" @endif>

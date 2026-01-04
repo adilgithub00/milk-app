@@ -8,8 +8,9 @@ use App\Http\Controllers\Admin\MilkController;
 use App\Http\Controllers\Admin\MilkRateController;
 use App\Http\Controllers\CalculatorController;
 use App\Http\Controllers\MilkEntryController;
-use App\Http\Controllers\YearlyReportController;
 use App\Http\Controllers\YearlyPaymentController;
+use App\Http\Controllers\YearlyReportController;
+use App\Http\Controllers\MilkSettingController;
 use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\IsAllowedIp;
 use App\Http\Middleware\PreventBackHistory;
@@ -23,7 +24,6 @@ Route::get('/calculator', [CalculatorController::class, 'index']);
 Route::post('/payment', [CalculatorController::class, 'storePayment'])->name('payment.store')->middleware(IsAllowedIp::class);
 Route::get('/yearly-report', [YearlyReportController::class, 'index']);
 Route::get('/yearly-payments', [YearlyPaymentController::class, 'index']);
-
 
 Route::get('register', [AuthController::class, 'showRegisterForm'])->name('register');
 Route::post('register', [AuthController::class, 'register'])->name('register.submit');
@@ -52,6 +52,12 @@ Route::middleware(['auth', IsAdmin::class, PreventBackHistory::class])->prefix('
             ->name('admin.settings.password');
 
         Route::post('password', [AdminSettingsController::class, 'updatePassword'])->name('settings.update.password');
+
+        Route::get('/milk', [MilkSettingController::class, 'edit'])
+            ->name('admin.settings.milk.edit');
+
+        Route::post('/milk', [MilkSettingController::class, 'update'])
+            ->name('admin.settings.milk.update');
     });
 });
 

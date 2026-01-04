@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\MilkEntry;
 use App\Models\MonthlyRate;
+use App\Models\Setting;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -33,7 +34,7 @@ class MilkEntryController extends Controller
         // AUTO CARRY-OVER LOGIC
         // =========================
 
-        $perDayKg = 2;
+        $perDayKg = (int) Setting::get('milk_per_day_kg', 2);
 
         $coverageMap = [];
         $tooltips = [];

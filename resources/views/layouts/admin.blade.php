@@ -103,6 +103,13 @@
                             </a>
                         </li>
 
+                              <li class="nav-item">
+                            <a href="{{ route('admin.settings.milk.edit') }}"
+                                class="nav-link {{ request()->routeIs('admin.settings.milk.edit') ? 'active' : '' }}">
+                                <i class="bi bi-lock me-2"></i> Change Milk
+                            </a>
+                        </li>
+
                     </ul>
                 </div>
             </li>
