@@ -41,9 +41,60 @@
      }
 
      .today-highlight {
-         border-radius: 10px;
-         border-color: #454407;
+         border: 2px solid #0d6efd;
+         box-shadow: 0 0 8px rgba(13, 110, 253, .4);
      }
+
+     .calendar-day {
+         transition: transform .15s ease, box-shadow .15s ease;
+     }
+
+     .calendar-day:hover {
+         transform: translateY(-3px);
+         box-shadow: 0 6px 14px rgba(0, 0, 0, .08);
+     }
+
+
+     /* Calendar status colors */
+
+     .badge:empty {
+         display: inline-block !important;
+     }
+
+     .badge-milk-added {
+         background-color: #2ecc71;
+         /* green */
+         color: #fff;
+     }
+
+     .badge-no-milk {
+         background-color: #bdc3c7;
+         /* light gray */
+         color: #2c3e50;
+     }
+
+     .badge-covered {
+         background-color: #a4d5b7;
+         /* blue */
+         color: #fff;
+     }
+
+     .badge-partial {
+         background-color: #f1c40f;
+         /* yellow */
+         color: #000;
+     }
+
+     /* Optional: round dot style */
+     /* .badge-dot {
+         width: 10px;
+         height: 10px;
+         padding: 0;
+         border-radius: 50%;
+         display: inline-block;
+     } */
+
+
 
      /* ---------------- MOBILE ---------------- */
      @media (max-width: 768px) {
@@ -63,9 +114,9 @@
      }
 
      @media (max-width: 480px) {
-         .calendar-grid {
-             grid-template-columns: repeat(3, 1fr);
-         }
+         /* .calendar-grid {
+             grid-template-columns: repeat(4, 1fr);
+         } */
 
          .calendar-day {
              min-height: 80px;
@@ -76,6 +127,10 @@
      /* Calendar End */
 
      /* Calculator Start */
+
+     .top-cal-card .card-body {
+         height: 108px;
+     }
 
      @media (max-width: 768px) {
          h3 {
@@ -111,6 +166,19 @@
      }
 
      /* Calculation End */
+
+     .collapse-toggle i {
+         transition: transform 0.2s ease;
+     }
+
+     .collapse.show+.collapse-toggle i,
+     .collapse-toggle[aria-expanded="true"] i {
+         transform: rotate(180deg);
+     }
+
+     .border-dashed {
+         border-style: dashed !important;
+     }
 
      /* Yearly Report Start */
 

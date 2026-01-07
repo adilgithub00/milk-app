@@ -74,6 +74,7 @@ class MilkEntryController extends Controller
         }
 
         return view('milk.calendar', compact(
+            'perDayKg',
             'entries',
             'entriesCollection',
             'totalKg',

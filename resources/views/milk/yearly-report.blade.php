@@ -17,16 +17,16 @@
             <div class="col-md-6 text-center text-md-end">
                 <div class="d-grid d-md-inline gap-2">
 
-                    <a href="{{ url('/') }}" class="btn btn-primary btn-sm">
-                        Monthly Calendar
+                    <a href="{{ url('/') }}" class="btn btn-outline-primary btn-sm">
+                        📆 Calendar
                     </a>
 
-                    <a href="{{ url('/calculator') }}" class="btn btn-primary btn-sm">
-                        Monthly Calculator
+                    <a href="{{ url('/calculator') }}" class="btn btn-outline-primary btn-sm">
+                        🧮 Calculator
                     </a>
 
-                    <a href="{{ url('/yearly-payments') }}" class="btn btn-primary btn-sm">
-                        Yearly payments
+                    <a href="{{ url('/yearly-payments') }}" class="btn btn-outline-primary btn-sm">
+                        💳 Payments
                     </a>
 
                 </div>
@@ -65,7 +65,15 @@
                                 </td>
                                 <td>{{ number_format($m['totalAmount']) }}</td>
                                 <td>{{ number_format($m['paid']) }}</td>
-                                <td>{{ number_format($m['remaining']) }}</td>
+                                <td>
+                                    @if ($m['remaining'] > 0)
+                                        <span class="fw-semibold text-danger">
+                                            {{ number_format($m['remaining']) }}
+                                        </span>
+                                    @else
+                                        <span class="text-success fw-semibold">0</span>
+                                    @endif
+                                </td>
                             </tr>
 
                             {{-- Daily breakdown (collapsible) --}}
@@ -74,7 +82,7 @@
                                     <td colspan="6" class="p-0">
                                         <div class="d-grid gap-1">
                                             <button
-                                                class="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-between"
+                                                class="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-between collapse-toggle"
                                                 type="button" data-bs-toggle="collapse"
                                                 data-bs-target="#dailyEntries{{ $index }}" aria-expanded="false"
                                                 aria-controls="dailyEntries{{ $index }}">
@@ -84,14 +92,14 @@
 
                                             <div class="collapse" id="dailyEntries{{ $index }}">
                                                 <div class="table-responsive mt-1">
-                                                    <table class="table table-sm table-bordered mb-0">
-                                                        <thead class="table-light">
+                                                    <table class="table table-sm table-bordered border-dashed">
+                                                        <thead class="table-light small text-muted">
                                                             <tr>
                                                                 <th>Date</th>
                                                                 <th>Day</th>
-                                                                <th>Milk (KG)</th>
-                                                                <th>Rate</th>
-                                                                <th>Amount</th>
+                                                                <th class="text-end">KG</th>
+                                                                <th class="text-end">Rate</th>
+                                                                <th class="text-end">Amount</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -100,9 +108,11 @@
                                                                     <td>{{ $d['date'] }}</td>
                                                                     <td>{{ \Carbon\Carbon::parse($d['date'])->translatedFormat('D') }}
                                                                     </td>
-                                                                    <td>{{ $d['kg'] }}</td>
-                                                                    <td>{{ $d['rate'] }}</td>
-                                                                    <td>{{ number_format($d['amount']) }}</td>
+                                                                    <td class="text-end">{{ $d['kg'] }}</td>
+                                                                    <td class="text-end">{{ number_format($d['rate'], 2) }}
+                                                                    </td>
+                                                                    <td class="text-end">{{ number_format($d['amount']) }}
+                                                                    </td>
                                                                 </tr>
                                                             @endforeach
                                                         </tbody>

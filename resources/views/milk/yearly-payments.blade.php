@@ -17,16 +17,16 @@
             <div class="col-md-6 text-center text-md-end">
                 <div class="d-grid d-md-inline gap-2">
 
-                    <a href="{{ url('/') }}" class="btn btn-primary btn-sm">
-                        Monthly Calendar
+                    <a href="{{ url('/') }}" class="btn btn-outline-primary btn-sm">
+                        📆 Calendar
                     </a>
 
-                    <a href="{{ url('/calculator') }}" class="btn btn-primary btn-sm">
-                        Monthly Calculator
+                    <a href="{{ url('/calculator') }}" class="btn btn-outline-primary btn-sm">
+                        🧮 Calculator
                     </a>
 
-                    <a href="{{ url('/yearly-report') }}" class="btn btn-primary btn-sm">
-                        Yearly Report
+                    <a href="{{ url('/yearly-report') }}" class="btn btn-outline-primary btn-sm">
+                        📊 Yearly Report
                     </a>
 
                 </div>
@@ -55,87 +55,86 @@
             <div class="card-body table-responsive">
 
                 <table class="table table-bordered table-striped align-middle">
-                    <thead class="table-dark">
+                    <thead class="table-dark small">
                         <tr>
                             <th>Month</th>
-                            <th>Total Amount</th>
-                            <th>Paid</th>
-                            <th>Action</th>
+                            <th class="text-end">Total</th>
+                            <th class="text-end">Paid</th>
+                            <th class="text-center">Action</th>
                         </tr>
                     </thead>
 
-                    <tbody style="background-color:black !important">
+                    <tbody>
                         @foreach ($months as $index => $m)
-                            <tr
-                                class="{{ strtolower($m['month']) == strtolower(now()->format('F')) ? 'table-warning' : '' }}">
+                            <tr>
                                 <td>{{ $m['month'] }}</td>
-                                <td>{{ number_format($m['totalAmount']) }}</td>
-                                <td>{{ number_format($m['paid']) }}
-                                    {{-- <small class="text-muted" style="size:1px; color:red">Remaining: {{ $m['remaining'] }}</small> --}}
+
+                                <td class="text-end">
+                                    {{ number_format($m['totalAmount']) }}
                                 </td>
-                                <td>
-                                    @if ($m['remaining'] > 0 || ($m['remaining'] > 0 && $lastMonth === $m['month']))
-                                        <button class="btn btn-sm btn-primary mt-1" data-bs-toggle="modal"
-                                            data-bs-target="#paymentModal" data-month="{{ $m['month'] }}"
-                                            data-remaining="{{ $m['remaining'] }}"
+
+                                <td class="text-end">
+                                    {{ number_format($m['paid']) }}
+                                </td>
+
+                                <td class="text-center">
+                                    @if ($m['remaining'] > 0)
+                                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                                            data-bs-target="#paymentModal" data-remaining="{{ $m['remaining'] }}"
                                             data-start="{{ \Carbon\Carbon::parse('01 ' . $m['month'])->startOfMonth()->toDateString() }}"
                                             data-end="{{ \Carbon\Carbon::parse('01 ' . $m['month'])->endOfMonth()->toDateString() }}">
                                             Add Payment
                                         </button>
-                                    @elseif($m['totalAmount'] > 0 && $m['paid'] == $m['totalAmount'])
-                                        <small class="text-muted">Payment Done</small>
+                                    @elseif ($m['totalAmount'] > 0)
+                                        <span class="badge bg-success">Paid</span>
                                     @else
-                                        <small class="text-muted">Not Available</small>
+                                        <span class="text-muted">—</span>
                                     @endif
                                 </td>
                             </tr>
 
-                            {{-- Daily breakdown (collapsible) --}}
+                            {{-- Collapsible payments --}}
                             @if (count($m['individualEntries']) > 0)
                                 <tr>
-                                    <td colspan="6" class="p-0">
+                                    <td colspan="4" class="p-0">
                                         <div class="d-grid gap-1">
                                             <button
-                                                class="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-between"
-                                                type="button" data-bs-toggle="collapse"
-                                                data-bs-target="#dailyEntries{{ $index }}" aria-expanded="false"
-                                                aria-controls="dailyEntries{{ $index }}">
-                                                <span>All Entries</span>
+                                                class="btn btn-sm btn-outline-secondary w-100 d-flex justify-content-between align-items-center collapse-toggle"
+                                                data-bs-toggle="collapse" data-bs-target="#payments{{ $index }}"
+                                                aria-expanded="false">
+                                                <span>📂 View Payments</span>
                                                 <i class="bi bi-chevron-down"></i>
                                             </button>
 
-                                            <div class="collapse" id="dailyEntries{{ $index }}">
-                                                <div class="table-responsive mt-1">
-                                                    <table class="table table-sm table-bordered mb-0">
-                                                        <thead class="table-primary">
+                                            <div class="collapse" id="payments{{ $index }}">
+                                                <table class="table table-sm table-bordered border-dashed">
+                                                    <thead class="table-light small text-muted">
+                                                        <tr>
+                                                            <th>Date</th>
+                                                            <th>Day</th>
+                                                            <th class="text-end">Amount</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach ($m['individualEntries'] as $d)
                                                             <tr>
-                                                                <th>Date</th>
-                                                                <th>Day</th>
-                                                                <th>Amount</th>
+                                                                <td>{{ $d['date'] }}</td>
+                                                                <td>{{ \Carbon\Carbon::parse($d['date'])->format('D') }}
+                                                                </td>
+                                                                <td class="text-end">
+                                                                    {{ number_format($d['amount']) }}
+                                                                </td>
                                                             </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            @foreach ($m['individualEntries'] as $d)
-                                                                <tr>
-                                                                    <td>{{ $d['date'] }}</td>
-                                                                    <td>{{ \Carbon\Carbon::parse($d['date'])->translatedFormat('D') }}
-                                                                    </td>
-                                                                    <td>{{ number_format($d['amount']) }}</td>
-                                                                </tr>
-                                                            @endforeach
-                                                        </tbody>
-                                                    </table>
-                                                </div>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
                                             </div>
                                         </div>
                                     </td>
-
                                 </tr>
                             @endif
                         @endforeach
-
                     </tbody>
-
                 </table>
 
                 {{-- Popup Model Start --}}

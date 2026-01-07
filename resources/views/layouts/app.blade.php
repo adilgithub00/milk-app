@@ -65,50 +65,31 @@
     {{-- Add payment confirmation popup from report section --}}
     <script>
         document.getElementById('paymentModal').addEventListener('show.bs.modal', function(event) {
+            const btn = event.relatedTarget;
 
-            const button = event.relatedTarget;
+            const remaining = parseInt(btn.dataset.remaining);
+            const start = btn.dataset.start;
+            const end = btn.dataset.end;
 
-            const remaining = parseInt(button.getAttribute('data-remaining'));
-            const start = button.getAttribute('data-start');
-            const end = button.getAttribute('data-end');
+            const date = document.getElementById('paymentDate');
+            const amount = document.getElementById('paymentAmount');
 
-            const dateInput = document.getElementById('paymentDate');
-            const amountInput = document.getElementById('paymentAmount');
-            const submitBtn = document.querySelector('#paymentModal .btn-success');
-
-            // Disable submit if remaining <= 0
-            if (remaining <= 0) {
-                submitBtn.disabled = true;
-            } else {
-                submitBtn.disabled = false;
-            }
-
-            // Date restrictions
-            dateInput.min = start;
-            dateInput.max = end;
+            date.min = start;
+            date.max = end;
 
             const today = new Date().toISOString().split('T')[0];
+            date.value = (today >= start && today <= end) ? today : end;
 
-            if (today >= start && today <= end) {
-                dateInput.value = today;
-            } else if (today > end) {
-                dateInput.value = end;
-            } else {
-                dateInput.value = start;
-            }
-
-            // Amount logic
-            amountInput.value = remaining;
-            amountInput.oninput = function() {
-                this.value = this.value.replace(/[^0-9]/g, '');
-                if (parseInt(this.value) > remaining) {
-                    this.value = remaining;
+            amount.value = remaining;
+            amount.oninput = () => {
+                amount.value = amount.value.replace(/[^0-9]/g, '');
+                if (parseInt(amount.value) > remaining) {
+                    amount.value = remaining;
                 }
             };
         });
     </script>
-
-
+    {{-- Auto close alerts --}}
 
 
     <script>
