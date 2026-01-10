@@ -98,7 +98,7 @@
                     <div class="col-md-3">
                         <button class="btn btn-success w-100"
                             @if (!$activeRate) disabled title="Set milk rate first" @endif>
-                            Add Milk Entry
+                           <i class="bi bi-file-earmark-plus"></i> Add Milk
                         </button>
                     </div>
                 </form>

@@ -8,9 +8,9 @@ use App\Http\Controllers\Admin\MilkController;
 use App\Http\Controllers\Admin\MilkRateController;
 use App\Http\Controllers\CalculatorController;
 use App\Http\Controllers\MilkEntryController;
+use App\Http\Controllers\MilkSettingController;
 use App\Http\Controllers\YearlyPaymentController;
 use App\Http\Controllers\YearlyReportController;
-use App\Http\Controllers\MilkSettingController;
 use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\IsAllowedIp;
 use App\Http\Middleware\PreventBackHistory;
@@ -34,11 +34,17 @@ Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware(['auth', IsAdmin::class, PreventBackHistory::class])->prefix('admin')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])
         ->name('admin.dashboard');
+
+    Route::get('/dashboard/filter', [DashboardController::class, 'filter'])
+        ->name('admin.dashboard.filter');
+
     Route::resource('rates', MilkRateController::class);
     Route::patch('rates/{rate}/activate', [MilkRateController::class, 'activate'])
         ->name('rates.activate');
+
     Route::resource('milk-entries', MilkController::class)
         ->except(['show']);
+
     Route::resource('payments', AdminPaymentController::class)
         ->except(['show']);
 

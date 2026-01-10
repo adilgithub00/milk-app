@@ -126,7 +126,7 @@
                             <div class="col-md-4" style="margin-top: 46px">
                                 <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal"
                                     data-bs-target="#confirmPaymentModal" @if ($remaining <= 0) disabled @endif>
-                                    Add Payment
+                                    <i class="bi bi-credit-card-fill"></i> Add Payment
                                 </button>
                             </div>
                         </form>

@@ -40,11 +40,11 @@
                     <thead class="table-dark">
                         <tr>
                             <th>Month</th>
-                            <th style="">Total Milk (KG)</th>
-                            <th>Rates Used</th>
-                            <th>Total Amount</th>
-                            <th>Paid</th>
-                            <th>Remaining</th>
+                            <th class="text-end">Total Milk (KG)</th>
+                            <th class="text-center">Rates Used</th>
+                            <th class="text-end">Total Amount</th>
+                            <th class="text-end">Paid</th>
+                            <th class="text-end">Remaining</th>
                         </tr>
                     </thead>
 
@@ -53,8 +53,8 @@
                             <tr
                                 class="{{ strtolower($m['month']) == strtolower(now()->format('F')) ? 'table-warning' : '' }}">
                                 <td>{{ $m['month'] }}</td>
-                                <td>{{ $m['totalKg'] }}</td>
-                                <td>
+                                <td class="text-end">{{ $m['totalKg'] }}</td>
+                                <td class="text-center">
                                     @if (count($m['ratesUsed']) === 0)
                                         <span class="text-muted">—</span>
                                     @elseif(count($m['ratesUsed']) === 1)
@@ -63,9 +63,9 @@
                                         <span class="badge bg-warning text-dark">Multiple</span>
                                     @endif
                                 </td>
-                                <td>{{ number_format($m['totalAmount']) }}</td>
-                                <td>{{ number_format($m['paid']) }}</td>
-                                <td>
+                                <td class="text-end">{{ number_format($m['totalAmount']) }}</td>
+                                <td class="text-end">{{ number_format($m['paid']) }}</td>
+                                <td class="text-end">
                                     @if ($m['remaining'] > 0)
                                         <span class="fw-semibold text-danger">
                                             {{ number_format($m['remaining']) }}
@@ -86,7 +86,7 @@
                                                 type="button" data-bs-toggle="collapse"
                                                 data-bs-target="#dailyEntries{{ $index }}" aria-expanded="false"
                                                 aria-controls="dailyEntries{{ $index }}">
-                                                <span>Daily Entries</span>
+                                                <span>📅 Daily Entries</span>
                                                 <i class="bi bi-chevron-down"></i>
                                             </button>
 
