@@ -103,10 +103,10 @@
                             </a>
                         </li>
 
-                              <li class="nav-item">
+                        <li class="nav-item">
                             <a href="{{ route('admin.settings.milk.edit') }}"
                                 class="nav-link {{ request()->routeIs('admin.settings.milk.edit') ? 'active' : '' }}">
-                                <i class="bi bi-lock me-2"></i> Change Milk
+                                <i class="bi bi-droplet"></i> Milk Consumption
                             </a>
                         </li>
 
@@ -168,8 +168,10 @@
         document.querySelectorAll('.update-btn').forEach(button => {
             button.addEventListener('click', function() {
                 // Get input fields
-                const dateInput = document.querySelector('input[name="payment_date"]') ??  document.querySelector('input[name="entry_date"]');
-                const amountInput = document.querySelector('input[name="amount"]') ?? document.querySelector('input[name="quantity_kg"]');
+                const dateInput = document.querySelector('input[name="payment_date"]') ?? document
+                    .querySelector('input[name="entry_date"]');
+                const amountInput = document.querySelector('input[name="amount"]') ?? document
+                    .querySelector('input[name="quantity_kg"]');
 
                 // Format date if needed (optional)
                 const date = new Date(dateInput.value);

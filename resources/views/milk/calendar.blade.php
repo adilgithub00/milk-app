@@ -159,7 +159,7 @@
 
                     @if ($entry)
                         <span class="badge bg-success kg-badge mt-2">
-                            {{ round($entry->quantity_kg) }} kg
+                            {{ ($entry->quantity_kg) }} kg
                         </span>
                     @elseif($coverage === 'full')
                         <span class="is-coverede text-success small"></span>

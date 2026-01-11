@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\MilkEntry;
 use App\Models\MonthlyRate;
+use App\Models\Setting;
 use App\Models\Payment;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -17,8 +18,7 @@ class DashboardController extends Controller
         $monthInput = request('month', now()->month);
         $yearInput = request('year', now()->year);
 
-        // $monthInput = now()->month;
-        // $yearInput = now()->year;
+        $perDayKg = (int) Setting::get('milk_per_day_kg', 2);
 
         // Active rate
         $activeRate = MonthlyRate::where('is_active', true)->first();
@@ -88,10 +88,18 @@ class DashboardController extends Controller
             ]);
         }
 
+        $rateHistory = MonthlyRate::orderBy('effective_from')
+            ->select(
+                DB::raw("DATE_FORMAT(effective_from, '%d %b %Y') as label"),
+                'rate_per_kg'
+            )
+            ->get();
+
         return view('admin.dashboard', compact(
             'monthInput',
             'yearInput',
             'activeRate',
+            'perDayKg',
             'totalKg',
             'totalAmount',
             'paid',
@@ -101,7 +109,8 @@ class DashboardController extends Controller
             'dailyStats',
             'monthInput',
             'monthlyComparison',
-            'paymentComparison'
+            'paymentComparison',
+            'rateHistory'
         ));
     }
 
