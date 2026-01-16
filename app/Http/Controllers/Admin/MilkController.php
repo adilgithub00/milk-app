@@ -9,9 +9,23 @@ use Illuminate\Http\Request;
 
 class MilkController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $year = now()->year;
+        $year = $request->get('year', now()->year);
+
+        $months = $this->buildYearReport($year);
+
+        // AJAX request → return partial HTML only
+        if ($request->ajax()) {
+            return view('admin.milk_entries.partials.year_table', compact('months', 'year'))->render();
+        }
+
+        // Normal page load
+        return view('admin.milk_entries.index', compact('months', 'year'));
+    }
+
+    private function buildYearReport($year)
+    {
         $months = [];
 
         for ($month = 1; $month <= 12; $month++) {
@@ -21,29 +35,34 @@ class MilkController extends Controller
                 ->get();
 
             $totalKg = $entries->sum('quantity_kg');
-            $totalAmount = $entries->sum(fn($e) => $e->quantity_kg * $e->rate_per_kg);
+
+            $totalAmount = $entries->sum(function ($e) {
+                return $e->quantity_kg * $e->rate_per_kg;
+            });
 
             $paid = Payment::whereYear('payment_date', $year)
                 ->whereMonth('payment_date', $month)
                 ->sum('amount');
 
-            $remaining = $totalAmount - $paid;
-
-            // Group rates used in this month
-            $ratesUsed = $entries->pluck('rate_per_kg')->unique()->values()->all();
+            $ratesUsed = $entries
+                ->pluck('rate_per_kg')
+                ->unique()
+                ->values()
+                ->all();
 
             $months[] = [
                 'month' => Carbon::create($year, $month)->format('F'),
+                'month_number' => $month,
                 'totalKg' => $totalKg,
                 'totalAmount' => $totalAmount,
                 'paid' => $paid,
-                'remaining' => $remaining,
+                'remaining' => $totalAmount - $paid,
                 'ratesUsed' => $ratesUsed,
                 'dailyEntries' => $entries,
             ];
         }
 
-        return view('admin.milk_entries.index', compact('months', 'year'));
+        return $months;
     }
 
     // public function index()
@@ -79,6 +98,10 @@ class MilkController extends Controller
     public function destroy(MilkEntry $milk_entry)
     {
         $milk_entry->delete();
+
+        if (request()->ajax()) {
+            return response()->json(['success' => true]);
+        }
 
         return redirect()
             ->route('milk-entries.index')

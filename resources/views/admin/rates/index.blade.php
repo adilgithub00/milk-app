@@ -41,9 +41,9 @@
                     <thead class="table-dark">
                         <tr>
                             <th>Effective From</th>
-                            <th>Rate / KG</th>
-                            <th>Status</th>
-                            <th width="220">Actions</th>
+                            <th class="text-end">Rate / KG</th>
+                            <th class="text-center">Status</th>
+                            <th width="220" class="text-center">Actions</th>
                         </tr>
                     </thead>
 
@@ -51,8 +51,8 @@
                         @forelse($rates as $rate)
                             <tr>
                                 <td>{{ $rate->effective_from->format('d M Y') }}</td>
-                                <td>{{ number_format($rate->rate_per_kg, 2) }}</td>
-                                <td>
+                                <td class="text-end">{{ number_format($rate->rate_per_kg, 2) }}</td>
+                                <td class="text-center">
                                     @if ($rate->is_active)
                                         <span class="badge bg-success">Active</span>
                                     @else
@@ -60,7 +60,7 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <div class="d-flex gap-1">
+                                    <div class="d-flex gap-1 justify-content-center">
                                         <a href="{{ route('rates.edit', $rate) }}" class="btn btn-sm btn-warning">
                                             Edit
                                         </a>

@@ -148,18 +148,73 @@
 
     {{-- Delete payment confirmation popup --}}
     <script>
-        document.querySelectorAll('.delete-btn').forEach(button => {
-            button.addEventListener('click', function() {
+        let deleteUrl = null;
+        let deleteRowId = null;
 
-                document.getElementById('confirmDate').innerText =
-                    this.dataset.date;
 
-                document.getElementById('confirmAmount').innerText =
-                    this.dataset.amount;
+        // Capture delete click (robust)
+        document.addEventListener('click', function(e) {
 
-                document.getElementById('deletePaymentForm').action =
-                    this.dataset.action;
-            });
+            const btn = e.target.closest('.delete-btn');
+
+            if (!btn) return;
+
+            deleteUrl = btn.dataset.action;
+            deleteRowId = btn.dataset.rowId;
+
+            document.getElementById('confirmDate').innerText = btn.dataset.date;
+            document.getElementById('confirmAmount').innerText = btn.dataset.amount;
+
+        });
+
+
+        // Confirm delete
+        document.addEventListener('click', function(e) {
+
+            if (!e.target.closest('#confirmDeleteBtn')) return;
+
+            if (!deleteUrl) return;
+
+            let spinner = document.getElementById('deleteSpinner');
+            let text = document.querySelector('#confirmDeleteBtn .btn-text');
+
+            spinner.classList.remove('d-none');
+            text.classList.add('d-none');
+
+            fetch(deleteUrl, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        _method: 'DELETE'
+                    })
+                })
+                .then(res => res.json())
+                .then(() => {
+
+                    const modalEl = document.getElementById('confirmDeleteModal');
+                    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+                    modal.hide();
+
+                    let row = document.getElementById(deleteRowId);
+                    if (row) row.remove();
+
+                    new bootstrap.Toast(document.getElementById('deleteToast')).show();
+
+                })
+                .finally(() => {
+
+                    spinner.classList.add('d-none');
+                    text.classList.remove('d-none');
+
+                    deleteUrl = null;
+                    deleteRowId = null;
+
+                });
+
         });
     </script>
 

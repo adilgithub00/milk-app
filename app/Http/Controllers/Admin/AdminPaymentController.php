@@ -24,6 +24,11 @@ class AdminPaymentController extends Controller
 
         $total = $payments->sum('amount');
 
+        // AJAX request
+        if ($request->ajax()) {
+            return view('admin.payments.partials.table', compact('payments', 'total'))->render();
+        }
+
         return view('admin.payments.index', compact('payments', 'month', 'total'));
     }
 
@@ -96,6 +101,10 @@ class AdminPaymentController extends Controller
     public function destroy(Payment $payment)
     {
         $payment->delete();
+
+        if (request()->ajax()) {
+            return response()->json(['success' => true]);
+        }
 
         return redirect()
             ->route('payments.index')

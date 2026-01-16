@@ -47,7 +47,6 @@
         </form>
 
 
-
         {{-- SUMMARY CARDS --}}
         <div class="row g-3 mb-4">
 
@@ -172,8 +171,6 @@
                     </div>
                 </div>
             </div>
-
-
         </div>
 
 
